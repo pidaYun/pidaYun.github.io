@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;300;400;500;700;900&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/vue@3.2.7/dist/vue.global.prod.js"></script>
+    <title>菇菇大圖鑑</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+    <div id="app">
+        <header>
+            <a href="./index.html">菇菇大圖鑑</a>
+            <!-- <img src="" alt=""> -->
+            <span>
+                <a href="../index.html">菇菇DX極</a>
+                <a href="./page2.html">菇菇World</a>
+                <a href="./page3.html">元祖菇菇</a>
+                <a href="./sharePage.html">留言分享</a>
+            </span>
+        </header>
+        <div class="middle">
+            <div class="middle-left">
+                <div>
+                    <span id="show">未登入帳號</span>
+                    <input type="email" name="" id="email" placeholder="信箱">
+                    <input type="password" name="" id="password" placeholder="密碼">
+                    <button id="login">登入</button>
+                    <button id="register">註冊</button>
+                </div>
+            </div>
+            <div class="middle-right">
+                <h2>菇菇World</h2>
+                <div class="search-bar">
+                    <span>搜尋</span>
+                    <input type="text" placeholder="輸入關鍵字" v-model="keyword">
+                </div>
+                <div class="result-col">
+                    <section v-for="items in condition">
+                        <img :src=items.image alt="">
+                        <p>{{ items.intro }}</p>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <footer>
+            <a href="https://namepara.com/zh/">菇菇栽培官方網站</a>
+            <a href="https://www.books.com.tw/products/M020027559">博客來購買書</a>
+            <a href="https://www.facebook.com/gugu.funghi/">菇菇栽培FB</a>
+        </footer>
+    </div>
+    <script type="module">
+        Vue.createApp({
+            data(){
+                let dict = [
+                    {
+                        "index": 17,
+                        "image": "../images/17.jpg",
+                        "intro": "菇菇\n能用兩腳走路的食用菇類。特徵是會嗯哼嗯哼的叫。為了稱霸全世界的餐桌，菇菇開始進軍世界。"
+                    },
+                    {
+                        "index": 18,
+                        "image": "../images/18.jpg",
+                        "intro": "哭枯菇菇\n要是菇菇枯了，也不用太擔心。因為菇菇就算苦了，也會開朗的活下去。\n#綠色"
+                    },
+                    {
+                        "index": 19,
+                        "image": "../images/19.jpg",
+                        "intro": "櫻花菇菇\n用VR相機把自己拍成動畫並傳到網站上，藉此發了一比橫財。「新時代！VR賞花！」"
+                    },
+                    {
+                        "index": 20,
+                        "image": "../images/20.jpg",
+                        "intro": "金鯉旗菇菇\n紅鯉旗菇菇開悟後大幅成長的模樣。過去那隻賴在地上無理取鬧的菇菇，如今已經領悟到明鏡止水的意境。\n#金色#巨人"
+                    },
+                    {
+                        "index": 21,
+                        "image": "../images/21.jpg",
+                        "intro": "小辣椒菇菇\n自己的味道超辣，卻喜歡吃超甜的甜食。為了尋求最甜的甜食，同胞們的足跡遍佈世界各地。\n#紅色"
+                    },
+                    {
+                        "index": 22,
+                        "image": "../images/22.jpg",
+                        "intro": "湧泉菇菇\n會移動的湧泉，十分稀有。據說他頭上湧出的泉水，好像有讓植物急速成長的效果。\n#綠色"
+                    },
+                    {
+                        "index": 23,
+                        "image": "../images/23.jpg",
+                        "intro": "巨人菇菇 \n比普通菇菇要來得更巨大，戰鬥力也更高。雖然他沒有要戰鬥的意思就是了。\n#巨人"
+                    },
+                    {
+                        "index": 24,
+                        "image": "../images/24.jpg",
+                        "intro": "高山菇菇\n很容易被人發現的菇菇。因為他只要聽到有人喊「呀呵~」，就會忍不住回答「嗯哼~！」。"
+                    },
+                    {
+                        "index": 25,
+                        "image": "../images/25.jpg",
+                        "intro": "小白菇菇\n連腦袋都會馬上變得空白一片的菇菇。在自然界中生存的技術，也早就忘得一乾二淨了。"
+                    },
+                    {
+                        "index": 26,
+                        "image": "../images/26.jpg",
+                        "intro": "猛男菇菇\n正如所見，是肌肉發達的筋肉男菇菇。會把拿在手上的東西全部當作槓鈴 。"
+                    },
+                    {
+                        "index": 27,
+                        "image": "../images/27.jpg",
+                        "intro": "原始菇菇\n在討生活的同時，也十分珍惜自古以來的姿態與習慣 。他是對流行事物不屑一顧的類型。"
+                    },
+                    {
+                        "index": 28,
+                        "image": "../images/28.jpg",
+                        "intro": "日出菇菇\n太陽之國墨西哥！而我是太陽的菇菇！帶給你24小時的陽光！怎麼大家都枯掉了？\n#黃色"
+                    },
+                    {
+                        "index": 29,
+                        "image": "../images/29.jpg",
+                        "intro": "白兔菇菇\n在溫差大的時期該怎麼穿搭很令人煩惱呢。如你所見，這是不論炎熱或寒冷都不適合的打扮。"
+                    },
+                    {
+                        "index": 30,
+                        "image": "../images/30.jpg",
+                        "intro": "金粉菇菇\n那副金色身體並不是天生，而是全身灑滿金粉的緣故。最大的樂趣就是用身上掉落的金粉，讓食物看起來變豪華。\n#金色"
+                    },
+                    {
+                        "index": 31,
+                        "image": "../images/31.jpg",
+                        "intro": "世界樹菇菇\n受到湧泉效果影響而產生變異的品種。葉子並沒有復活的效果，所以別亂摘。\n#綠色"
+                    },
+                ]
+                let key = "";
+                return{
+                    dict: dict,
+                    keyword: key
+                }
+            },
+            computed:{
+                condition(){
+                    let keyword = this.keyword;
+                    let key = [];
+                    for (let i in this.dict[0]){
+                        key.push(i);
+                    }
+                    return this.dict.filter(function (item){
+                        return item[key[2]].includes(keyword);
+                    })
+                }
+            }
+        }).mount('#app')
+    </script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD7l9xqejsr4bWaDuwCsNRBNsdHhpkUjec",
+            authDomain: "mushroom-82b6b.firebaseapp.com",
+            databaseURL: "https://mushroom-82b6b-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "mushroom-82b6b",
+            storageBucket: "mushroom-82b6b.appspot.com",
+            messagingSenderId: "337998152248",
+            appId: "1:337998152248:web:6a75ea021436ee26b99ccd"
+        };
+
+        const app = initializeApp(firebaseConfig);
+
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, setPersistence, browserSessionPersistence }
+            from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"
+
+        function create(){
+            let email = document.getElementById('email').value;
+            let password = document.getElementById('password').value;
+            if (password.length < 6){
+                alert('密碼長度需至少為六字元')
+                return
+            }
+            createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential)=>{
+                const user = userCredential.user;
+                console.log(user);
+            })
+            .catch((error)=>{
+                console.log(error.message);
+            })
+        }
+        function account(){
+            let email = document.getElementById('email').value;
+            let password = document.getElementById('password').value;
+            signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential)=>{
+                const user = userCredential.user;
+                let show = document.getElementById('show');
+                show.innerHTML = '已成功登入'
+            })
+            .catch((error)=>{
+                console.log(error.message);
+            })
+        }
+
+        var register = document.getElementById('register');
+        var login = document.getElementById('login');
+        const auth = getAuth();
+
+        register.addEventListener('click', create);
+        login.addEventListener('click', account);
+
+        setPersistence(auth, browserSessionPersistence)
+        .then(()=>{
+        })
+        .catch((error)=>{
+            console.log(error.message);
+        })
+
+        onAuthStateChanged(auth, (user)=>{
+            let show = document.getElementById('show');
+            if (user){
+                console.log(user.uid);
+                show.innerHTML = '已成功登入'
+            }
+            else{
+                show.innerHTML = '未登入帳號'
+            }
+        })
+
+        import { getDatabase, ref, get, set, child, update, remove }
+            from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+    </script>
+</body>
+
+</html>

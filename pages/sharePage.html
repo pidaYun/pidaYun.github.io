@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;300;400;500;700;900&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/vue@3.2.7/dist/vue.global.prod.js"></script>
+    <title>心得分享區</title>
+    <link rel="stylesheet" href="../style/sharePageStyle.css">
+</head>
+
+<body>
+    <div id="app">
+        <header>
+            <a href="../index.html">菇菇大圖鑑</a>
+            <!-- <img src="" alt=""> -->
+            <span>
+                <a href="../index.html">菇菇DX極</a>
+                <a href="./page2.html">菇菇World</a>
+                <a href="./page3.html">元祖菇菇</a>
+                <a href="./sharePage.html">留言分享</a>
+            </span>
+        </header>
+        <div class="middle">
+            <div class="middle-left">
+                <div>
+                    <span id="show">未登入帳號</span>
+                    <input type="email" name="" id="email" placeholder="信箱">
+                    <input type="password" name="" id="password" placeholder="密碼">
+                    <button id="login">登入</button>
+                    <button id="register">註冊</button>
+                </div>
+            </div>
+            <div class="middle-right">
+                <h2>心得分享區</h2>
+                <section>
+                    <textarea name="" id="shareText" cols="50" rows="3"></textarea>
+                    <button id="sendShare">送出</button>
+                </section>
+                <div class="history" id="history">
+                </div>
+            </div>
+        </div>
+        <footer>
+            <a href="https://namepara.com/zh/">菇菇栽培官方網站</a>
+            <a href="https://www.books.com.tw/products/M020027559">博客來購買書</a>
+            <a href="https://www.facebook.com/gugu.funghi/">菇菇栽培FB</a>
+        </footer>
+    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD7l9xqejsr4bWaDuwCsNRBNsdHhpkUjec",
+            authDomain: "mushroom-82b6b.firebaseapp.com",
+            databaseURL: "https://mushroom-82b6b-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "mushroom-82b6b",
+            storageBucket: "mushroom-82b6b.appspot.com",
+            messagingSenderId: "337998152248",
+            appId: "1:337998152248:web:6a75ea021436ee26b99ccd"
+        };
+
+        const app = initializeApp(firebaseConfig);
+
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, setPersistence, browserSessionPersistence }
+            from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"
+
+        function create(){
+            let email = document.getElementById('email').value;
+            let password = document.getElementById('password').value;
+            if (password.length < 6){
+                alert('密碼長度需至少為六字元')
+                return
+            }
+            createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential)=>{
+                const user = userCredential.user;
+            })
+            .catch((error)=>{
+                console.log(error.message);
+            })
+        }
+        function account(){
+            let email = document.getElementById('email').value;
+            let password = document.getElementById('password').value;
+            signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential)=>{
+                const user = userCredential.user;
+                let show = document.getElementById('show');
+                show.innerHTML = '已成功登入'
+            })
+            .catch((error)=>{
+                console.log(error.message);
+            })
+        }
+
+        var register = document.getElementById('register');
+        var login = document.getElementById('login');
+        const auth = getAuth();
+
+        register.addEventListener('click', create);
+        login.addEventListener('click', account);
+
+        setPersistence(auth, browserSessionPersistence)
+        .then(()=>{
+        })
+        .catch((error)=>{
+            console.log(error.message);
+        })
+
+        onAuthStateChanged(auth, (user)=>{
+            let show = document.getElementById('show');
+            if (user){
+                show.innerHTML = '已成功登入'
+            }
+            else{
+                show.innerHTML = '未登入帳號'
+            }
+        })
+
+        import { getDatabase, ref, get, set, child, update, remove, onValue }
+            from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+        const db = getDatabase(app);
+        
+        function insertDatabase(){
+            var today = new Date();
+            const name = auth.currentUser.email.split('@')[0]
+            set(ref(db, 'share/' + Date.now()), {
+                shareName: name,
+                shareTime: today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDate(),
+                shareText: document.getElementById('shareText').value
+            })
+            document.getElementById('shareText').value = '';
+        }
+
+        var sendShare = document.getElementById("sendShare");
+        sendShare.addEventListener('click', insertDatabase);
+
+        function selectDatabase(){
+            const dbref = ref(db, 'share/');
+            onValue(dbref, (snapshot)=>{
+                let history = document.getElementById('history');
+                history.innerHTML = "";
+                if (snapshot.exists()){
+                    for (let i = 0; i < Object.keys(snapshot.val()).length; i++){
+                        let sc = document.createElement('section');
+                        let sc_1 = document.createElement('span');
+                        let sc_2 = document.createElement('span');
+                        let sc_3 = document.createElement('p');
+                        sc_1.innerHTML = Object.values(snapshot.val())[i].shareName;
+                        sc_2.innerHTML = Object.values(snapshot.val())[i].shareTime;
+                        sc_3.innerHTML = Object.values(snapshot.val())[i].shareText;
+                        sc.appendChild(sc_1);
+                        sc.appendChild(sc_2);
+                        sc.appendChild(sc_3);
+                        history.appendChild(sc);
+
+                    }
+                }
+            })
+        }
+        selectDatabase();
+
+    </script>
+</body>
+
+</html>
